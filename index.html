@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Industrial IoT Platform Simulation</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="control-rail" aria-label="Simulation controls">
+        <div class="brand-block">
+          <p class="eyebrow">Interactive IoT Project</p>
+          <h1>Industrial IoT Smart Factory Simulation</h1>
+          <p>Model sensors, gateways, network transfer, cloud analytics, predictive maintenance, and automated actions based on the report's Cisco IoT and IBM Watson IoT case studies.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading">
+            <h2>Platform</h2>
+            <span id="platformBadge">Cisco IoT System</span>
+          </div>
+          <div class="segmented" role="group" aria-label="Select platform">
+            <button class="active" data-platform="cisco" type="button">Cisco</button>
+            <button data-platform="ibm" type="button">IBM Watson</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-heading">
+            <h2>Operating Scenario</h2>
+            <span id="scenarioBadge">Smart manufacturing</span>
+          </div>
+          <label class="select-wrap">
+            <span>Use case</span>
+            <select id="scenarioSelect">
+              <option value="manufacturing">Smart manufacturing</option>
+              <option value="energy">Energy management</option>
+              <option value="transport">Intelligent transportation</option>
+              <option value="healthcare">Healthcare monitoring</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="panel sliders">
+          <label>
+            <span>Connected devices <strong id="deviceCountValue">3500</strong></span>
+            <input id="deviceCount" type="range" min="50" max="15000" value="3500" step="50">
+          </label>
+          <label>
+            <span>Network quality <strong id="networkQualityValue">87%</strong></span>
+            <input id="networkQuality" type="range" min="30" max="100" value="87">
+          </label>
+          <label>
+            <span>Machine stress <strong id="stressValue">42%</strong></span>
+            <input id="stress" type="range" min="0" max="100" value="42">
+          </label>
+          <label>
+            <span>Security pressure <strong id="securityValue">18%</strong></span>
+            <input id="securityPressure" type="range" min="0" max="100" value="18">
+          </label>
+        </div>
+
+        <div class="panel action-panel">
+          <button id="toggleRun" class="primary-button" type="button">Pause Simulation</button>
+          <button id="injectFault" class="tool-button" type="button">Inject bearing fault</button>
+          <button id="resetSimulation" class="tool-button" type="button">Reset</button>
+        </div>
+      </section>
+
+      <section class="simulation-stage" aria-label="Industrial IoT simulation">
+        <div class="top-bar">
+          <div>
+            <p class="eyebrow">Live Architecture</p>
+            <h2 id="stageTitle">Cisco IoT System Workflow</h2>
+            <p id="stageSummary" class="stage-summary">Industrial sensor data moves from devices to secure networks, analytics, dashboards, and actuator feedback.</p>
+          </div>
+          <div class="status-chip" id="runState">Running</div>
+        </div>
+
+        <div class="workflow-strip" id="workflowStrip" aria-label="Platform workflow steps"></div>
+
+        <div class="factory-map">
+          <div class="layer-card layer-perception" data-layer="perception">
+            <div class="layer-icon">01</div>
+            <h3>Perception Layer</h3>
+            <p>Sensors collect temperature, vibration, pressure, energy, and device health readings.</p>
+            <div class="sensor-grid" id="sensorGrid"></div>
+          </div>
+
+          <div class="data-lane" aria-hidden="true">
+            <span>MQTT / TLS</span>
+          </div>
+
+          <div class="layer-card layer-network" data-layer="network">
+            <div class="layer-icon">02</div>
+            <h3>Network Layer</h3>
+            <p id="networkCopy">MQTT traffic flows through industrial routers with QoS and encrypted links.</p>
+            <div class="mini-meter">
+              <span>Packet delivery <strong id="packetDeliveryValue">87%</strong></span>
+              <div><i id="packetMeter"></i></div>
+            </div>
+          </div>
+
+          <div class="data-lane" aria-hidden="true">
+            <span>Ingestion</span>
+          </div>
+
+          <div class="layer-card layer-cloud" data-layer="processing">
+            <div class="layer-icon">03</div>
+            <h3 id="analyticsTitle">Kinetic Edge Analytics</h3>
+            <p id="analyticsCopy">Edge and cloud analytics detect anomalies and estimate maintenance risk.</p>
+            <div class="cloud-core">
+              <div id="riskDial">0%</div>
+              <span>Failure risk</span>
+            </div>
+          </div>
+
+          <div class="data-lane" aria-hidden="true">
+            <span>Insights</span>
+          </div>
+
+          <div class="layer-card layer-app" data-layer="application">
+            <div class="layer-icon">04</div>
+            <h3>Application Layer</h3>
+            <p>Dashboards send operator alerts, trigger work orders, and control actuators.</p>
+            <div class="actuator-stack">
+              <button class="actuator active" data-actuator="Cooling">Cooling</button>
+              <button class="actuator" data-actuator="Maintenance">Maintenance</button>
+              <button class="actuator" data-actuator="Isolation">Isolation</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <article class="metric-card">
+            <span>Temperature</span>
+            <strong id="temperatureValue">74.0 C</strong>
+            <canvas id="temperatureChart" width="320" height="120"></canvas>
+          </article>
+          <article class="metric-card">
+            <span>Vibration</span>
+            <strong id="vibrationValue">2.4 mm/s</strong>
+            <canvas id="vibrationChart" width="320" height="120"></canvas>
+          </article>
+          <article class="metric-card">
+            <span>Throughput</span>
+            <strong id="throughputValue">575 units/hr</strong>
+            <canvas id="throughputChart" width="320" height="120"></canvas>
+          </article>
+          <article class="metric-card">
+            <span>Energy Use</span>
+            <strong id="energyValue">82 kW</strong>
+            <canvas id="energyChart" width="320" height="120"></canvas>
+          </article>
+        </div>
+
+        <div class="bottom-grid">
+          <section class="panel event-panel">
+            <div class="panel-heading">
+              <h2>Event Stream</h2>
+              <span id="messageRate">0 msg/s</span>
+            </div>
+            <ol id="eventLog" class="event-log"></ol>
+          </section>
+
+          <section class="panel decision-panel">
+            <div class="panel-heading">
+              <h2>Automated Decision</h2>
+              <span id="decisionStatus">Normal</span>
+            </div>
+            <div class="decision-body">
+              <div>
+                <span class="label">Prediction</span>
+                <strong id="predictionText">No immediate maintenance required.</strong>
+              </div>
+              <div>
+                <span class="label">Action</span>
+                <strong id="actionText">Continue monitoring at standard sampling rate.</strong>
+              </div>
+              <div>
+                <span class="label">Security</span>
+                <strong id="securityText">Zero-trust checks passing.</strong>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
